@@ -1,9 +1,9 @@
 CC = gcc
-CFLAGS = -g -Wall
+CFLAGS =
 OBJECTS = PThreads.o
-INCFLAGS = -lpthread
-LDFLAGS = -Wl,-rpath,/usr/local/lib
-LIBS = 
+INCFLAGS = 
+LDFLAGS =
+LIBS =  -lpthread
 
 all: PThreads
 
@@ -21,7 +21,3 @@ count:
 
 clean:
 	rm -f *.o
-
-.PHONY: all
-.PHONY: count
-.PHONY: clean
