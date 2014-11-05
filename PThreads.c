@@ -13,8 +13,18 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <syscall.h>
+#include <errno.h>
 
-pthread_t thread[4];
+/*Error handling for pthread_create and pthread_join*/
+#define handle_error_en(en, msg) \
+        do { errno = en; perror(msg); exit(EXIT_FAILURE); } while (0)
+
+#define handle_error(msg) \
+        do { perror(msg); exit(EXIT_FAILURE); } while (0)
+/* # of running threads */
+volatile int running_threads = 0;
+
+pthread_t thread[3];
 pthread_mutex_t lock;
 
 struct Results{
@@ -43,6 +53,7 @@ void *findMin(void *array_ptr){
 	
 	Results.min = min;
 
+	running_threads -= 1;
 }
 
 void *findMax(void *array_ptr){
@@ -63,6 +74,7 @@ void *findMax(void *array_ptr){
 	
 	Results.max = max;
 
+	running_threads -= 1;
 }
 
 void *findAverage(void *array_ptr){
@@ -81,19 +93,21 @@ void *findAverage(void *array_ptr){
 	
 	Results.average = average/numOfElements;
 
+	running_threads -= 1;
 }
 
-/*This method accepts a int n(initial size of array) and
- pointer to an array and returns # of elements in the array*/
+/* This method accepts a int n(initial size of array) and
+   pointer to an array and returns # of elements in the array
+*/
 
 int getArrayInput(int n, int *array_ptr){
 		
-		int input;//Store user input 
-		int numberOfElements = 0;//Number of Integers inputed
+		int input;/*Store user input */
+		int numberOfElements = 0;/*Number of Integers inputed*/
 
     	printf("Creating Dynamic Array...\n-\n");
 
-		for(;;){  //infinite loop
+		for(;;){  /*infinite loop*/
 
     		printf("Enter a positive value:\nNegative Number to Stop\n-\n");
    
@@ -125,30 +139,67 @@ int getArrayInput(int n, int *array_ptr){
 	
 		}
 
+/* The main function initialiazes the dynamic array as well
+   as allocating space for it, Then it creates, using pthread_create,
+   3 Threads 1 to calculate the min, the max, and the average.
+   We then wait until each thread completes its task and then
+   join the 3 threads and prompt the user with the results
+ */
+
 int main(){
 
-	int n = 1; // Initial Array Size
-	int *array_ptr = malloc(n * sizeof(int));//Initialize array pointer
+	int s, n = 1; /* Initial Array Size*/
+	int *array_ptr = malloc(n * sizeof(int));/*Initialize array pointer*/
 		
-		numOfElements = getArrayInput(n, array_ptr);
+		 /*get an n sized array of elements from the user and save count*/
+		 numOfElements = getArrayInput(n, array_ptr);
 		
-		 pthread_create(&thread[0], NULL, findMin, (void *)array_ptr);
-		 wait(10000);
-		 pthread_join(thread[0], NULL);
-		// findMin(n, array_ptr);
+		 /*Create a thread and passing in the function to begin 
+		 exectuing as well as that functions required arguments*/ 
+		 s = pthread_create(&thread[0], NULL, findMin, (void *)array_ptr);
 
-		 pthread_create(&thread[1], NULL, findMax,  (void *)array_ptr);
-		 wait(10000);
-		 pthread_join(thread[1], NULL);
-		// findMax(n, array_ptr);
+		 if (s != 0){
+
+			handle_error_en(s, "pthread_create");
+		 
+		 }
+		 	running_threads += 1;
+
+		 /*Create a thread and passing in the function to begin 
+		 exectuing as well as that functions required arguments*/ 
+		 s = pthread_create(&thread[1], NULL, findMax, (void *)array_ptr);
+
+		 if (s != 0){
+        
+            handle_error_en(s, "pthread_create");
+       	
+       	 }
+        	 running_threads += 1;
+
+		 /*Create a thread and passing in the function to begin 
+		 exectuing as well as that functions required arguments*/ 
+		 s = pthread_create(&thread[2], NULL, findAverage, (void *)array_ptr);
+		 		 
+		 if (s != 0){
+
+           handle_error_en(s, "pthread_create");
+       	
+       	 }
+			running_threads += 1;
+
+			/*Wait for each thread to decrement*/
+	    	while(running_threads>0){
+	
+				sleep(1);
+
+			}
+			/*Join our threads*/
+			for(n = 0; n < 3; n++){
 		
-		 pthread_create(&thread[2], NULL, findAverage, (void *)array_ptr);
-		 wait(10000);	
-		 pthread_join(thread[2], NULL);	
-		 // findAverage(n, array_ptr);
- 		
- 		
- 		
+			 	pthread_join(thread[n], NULL);
+			
+			}
+		/*Prompt the user with our results*/
 		printf("\nAverage: %d\nMax: %d\nMin: %d\n",Results.average, Results.max, Results.min);
 
 }
