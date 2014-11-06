@@ -20,4 +20,4 @@ count:
 	wc *.c *.cc *.C *.cpp *.h *.hpp
 
 clean:
-	rm -f *.o
+	rm -f PThreads.o, PThreads
