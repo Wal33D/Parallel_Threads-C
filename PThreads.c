@@ -9,15 +9,15 @@
 	for a list of numbers. This program will be passed a series of numbers on 
 	the command line and will then create three separate worker threads:
 
-	1) Thread 1 will determine the average of the numbers
-	2) Thread 2 will determine the maximum value
-	3) Thread 3 will determine the minimum value
+	1) Thread 1 determine the average of the numbers
+	2) Thread 2 determine the maximum value
+	3) Thread 3 determine the minimum value
 
  NOTE: 
 	I used a dynamically increasing integer array, the same array I used in part 
 	3 of Assignment 1, I mention this becuase my program looks slightly different, 
-	on the cmd console, then the demo we were provided Instead of first specifying a # of 
-	elements for the array my array size increases as needed.
+	on the cmd console, then the demo we were provided. Instead of first specifying 
+	a # of elements for the array my array size increases as needed.
 /****************************************************************************************/
 
 #include <stdio.h>
@@ -30,26 +30,20 @@
 #define handle_error_en(en, msg) \
         do { errno = en; perror(msg); exit(EXIT_FAILURE); } while (0)
 
-#define handle_error(msg) \
-        do { perror(msg); exit(EXIT_FAILURE); } while (0)
-
 /* # of running threads */
 volatile int running_threads = 0;
 
-/*Descriptors for our 3 threads*/
-pthread_t thread[3];
+pthread_t thread[3]; /*Descriptors for our 3 threads*/
 
-/*Struct to hold the statistical results*/
-struct Results{
+int numOfElements;/*Total # of elements from the user*/
+
+struct Results{ /*Struct to hold the statistical results*/
 	
 	int min;
 	int max;
 	int average;
 
 }Results;
-
-/*Total # of elements from the user*/
-int numOfElements;
 
 /*This function finds the minimum element of an array*/
 void *findMin(void *array_ptr){
@@ -60,19 +54,19 @@ void *findMin(void *array_ptr){
 
 	Results.min = elements[0]; /*set minimum to first element */
 
-	/*iterate through array*/
-	for(i = 0; i < numOfElements; i++){
-		/*if the current element is less than the current min*/
-		if(elements[i] < Results.min){
+	for(i = 0; i < numOfElements; i++){	/*iterate through array*/
 
-			/*store the new min*/
-			Results.min = elements[i];
+		if(elements[i] < Results.min){	/*if the current element is less than the current min*/
+
+			Results.min = elements[i];	/*store the new min*/
+	
 		}
+	
 	}
-	/*Decrement thread count*/
-	running_threads -= 1;
 
-	return NULL;
+	running_threads -= 1;	/*Decrement thread count*/
+
+return NULL;
 
 }
 
@@ -82,40 +76,41 @@ void *findMax(void *array_ptr){
 	int i;	/*counter*/
 
 	int *elements = (int*)array_ptr; /*re reference void array pointer*/ 
-	/*iterate through array*/
-	for(i = 0; i < numOfElements; i++){
-		/*if the current element is greater than the current max*/
-		if(elements[i] > Results.max){
-			/*store the new max*/
+	
+	for(i = 0; i < numOfElements; i++){	/*iterate through array*/
+
+		if(elements[i] > Results.max){	/*store the new max*/
+
 			Results.max = elements[i];
 
 		}
 	}
 
-	/*Decrement thread count*/
-	running_threads -= 1;
+	running_threads -= 1;	/*Decrement thread count*/
 
-	return NULL;
+return NULL;
+
 }
 
 /*This function finds the average of an array*/
 void *findAverage(void *array_ptr){
 	
-	int i; /*counter*/
+	int i;	 /*counter*/
 
-	int *elements = (int*)array_ptr; /*re reference void array pointer*/
-	/*iterate through array*/
-	for(i = 0; i < numOfElements; i++){
-		/*add element @ i to average*/
-			Results.average += elements[i];
+	int *elements = (int*)array_ptr; 	/*re reference void array pointer*/
+
+	for(i = 0; i < numOfElements; i++){		/*iterate through array*/
+
+			Results.average += elements[i];		/*add element @ i to average*/
 
 	}
-	/*Divide the sum by the number of elements*/
-	Results.average = Results.average/numOfElements;
-	/*Decrement running threads counter*/
-	running_threads -= 1;
 
-	return NULL;
+	Results.average = Results.average/numOfElements;	/*Divide the sum by the number of elements*/
+
+	running_threads -= 1;	/*Decrement running threads counter*/
+
+return NULL;
+
 }
 
 /* This method accepts a int n(initial size of array) and
@@ -170,27 +165,29 @@ int getArrayInput(int n, int *array_ptr){
 		}
 
 /*This function joins our n number of threads */
-void joinThreads(){
+void joinThreads(int numberOfThreads){
 	
 	int i; /*count*/
 
 	int s; /*error #*/
-	
-	/*Join our threads*/
-	for(i = 0; i < 3; i++){
-					
-		s = pthread_join(thread[i], NULL);
+
+	while(numberOfThreads >= 0){	/*Join our threads*/
+
+		s = pthread_join(thread[numberOfThreads], NULL);
+
 		 /*if we recieve anything other than 0 we have a join error*/
 		 if (s != 0){
 		 	/*handle error*/
 			handle_error_en(s, "pthread_create");
 		 
 		 }
-	
-	}
-		
-}
 
+		 numberOfThreads--;
+
+	}
+	
+}
+	
 /*This function creates the 3 threads we need and supplys
   error catching for pthread_create, it could be 
   modified easily to create any # of threads automatically
@@ -243,7 +240,7 @@ void createThreads(int *array_ptr){
  */
 int main(){
 
-	int s, n = 1; /* Initial Array Size*/
+	int n = 1; /* Initial Array Size*/
 
 	int *array_ptr = malloc(n * sizeof(int));/*Initialize array pointer*/
 		
@@ -259,7 +256,7 @@ int main(){
 
 			}
 
-		joinThreads();
+		joinThreads(2);
 
 		/*Prompt the user with our results*/
 		printf("\nAverage: %d\nMax: %d\nMin: %d\n",Results.average, Results.max, Results.min);
