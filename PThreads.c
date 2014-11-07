@@ -249,17 +249,16 @@ int main(){
 		
 		 createThreads(array_ptr);
 		
-			/*Wait for each thread to decrement*/
-	    	while(running_threads>0){
+	    	while(running_threads>0){	/*Wait for each thread to decrement*/
 	
 				sleep(1);
 
 			}
 
-		joinThreads(2);
+		joinThreads(2);	/*Call our thread joining function passing # of threads */
 
 		/*Prompt the user with our results*/
-		printf("\nAverage: %d\nMax: %d\nMin: %d\n",Results.average, Results.max, Results.min);
+		printf("\nThe average is %d\nThe maximum is %d\nThe minimum is %d\n",Results.average, Results.max, Results.min);
 
 	return(0);
 
