@@ -6,7 +6,7 @@
 * Submitted: <11/6/14>
 
 	This is a multithreaded program that calculates various statistical values
-	for a list of numbers. This program will be passed a series of numbers on 
+	for a list of numbers. This program is passed a series of numbers on 
 	the command line and will then create three separate worker threads:
 
 	1) Thread 1 determine the average of the numbers
@@ -101,7 +101,7 @@ void *findAverage(void *array_ptr){
 
 	for(i = 0; i < numOfElements; i++){		/*iterate through array*/
 
-			Results.average += elements[i];		/*add element @ i to average*/
+		Results.average += elements[i];		/*add element @ i to average*/
 
 	}
 
@@ -150,7 +150,7 @@ int getArrayInput(int n, int *array_ptr){
 
         		array_ptr[numberOfElements++] = input;//Store input at next empty element
     
-    		}else{
+    		} else {
         
        		 printf("\nNumber of Integers: %d\n", numberOfElements);
        
