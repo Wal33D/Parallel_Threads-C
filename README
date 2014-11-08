@@ -16,7 +16,8 @@ the command line and will then create three separate worker threads:
 GRADER PLEASE READ!
 NOTE: 
 
-I used a dynamically increasing integer array, the same array I used in 
-part 3 of Assignment 1, I mention this becuase my program looks slightly different, 
-on the cmd console, then the demo we were provided Instead of first specifying a # of 
+I used a dynamically increasing integer array, the same array
+I used in part 3 of Assignment 1, I mention this becuase my
+program looks slightly different, on the cmd console, 
+then the demo we were provided Instead of first specifying a # of 
 elements for the array my array size increases as needed.
