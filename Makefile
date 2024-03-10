@@ -1,23 +1,25 @@
 CC = gcc
 CFLAGS =
-OBJECTS = PThreads.o
+OBJECTS = build/PThreads.o
 INCFLAGS = 
 LDFLAGS =
 LIBS =  -lpthread
+BUILDDIR = build
 
-all: PThreads
+all: $(BUILDDIR)/PThreads
 
-PThreads: $(OBJECTS)
-	$(CC) -o PThreads $(OBJECTS) $(LDFLAGS) $(LIBS)
+$(BUILDDIR)/PThreads: $(OBJECTS)
+	$(CC) -o $@ $(OBJECTS) $(LDFLAGS) $(LIBS)
 
 .SUFFIXES:
-.SUFFIXES:	.c .cc .C .cpp .o
+.SUFFIXES: .c .cc .C .cpp .o
 
-.c.o :
+$(BUILDDIR)/%.o : %.c
+	mkdir -p $(BUILDDIR)
 	$(CC) -o $@ -c $(CFLAGS) $< $(INCFLAGS)
 
 count:
 	wc *.c *.cc *.C *.cpp *.h *.hpp
 
 clean:
-	rm -f PThreads.o, PThreads
+	rm -f $(BUILDDIR)/*.o $(BUILDDIR)/PThreads
