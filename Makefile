@@ -1,25 +1,29 @@
 CC = gcc
-CFLAGS =
-OBJECTS = build/PThreads.o
-INCFLAGS = 
-LDFLAGS =
-LIBS =  -lpthread
+CFLAGS = -Wall -g -Iinclude
+TARGET = PThreads
+SRCDIR = src
+INCDIR = include
 BUILDDIR = build
 
-all: $(BUILDDIR)/PThreads
+# Update the SRC variable if necessary
+SRC = $(SRCDIR)/PThreads.c $(SRCDIR)/utils.c
 
-$(BUILDDIR)/PThreads: $(OBJECTS)
-	$(CC) -o $@ $(OBJECTS) $(LDFLAGS) $(LIBS)
+# Update OBJ to place object files in the build directory
+OBJ = $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o,$(SRC))
 
-.SUFFIXES:
-.SUFFIXES: .c .cc .C .cpp .o
+all: $(BUILDDIR) $(BUILDDIR)/$(TARGET)
 
-$(BUILDDIR)/%.o : %.c
+$(BUILDDIR):
 	mkdir -p $(BUILDDIR)
-	$(CC) -o $@ -c $(CFLAGS) $< $(INCFLAGS)
 
-count:
-	wc *.c *.cc *.C *.cpp *.h *.hpp
+# Update this rule to place the executable in the build directory
+$(BUILDDIR)/$(TARGET): $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -o $@
 
 clean:
-	rm -f $(BUILDDIR)/*.o $(BUILDDIR)/PThreads
+	rm -f $(OBJ)
+	rm -rf $(BUILDDIR) # Also remove the build directory on clean
+
+# Update the pattern rule for object files to use the build directory
+$(BUILDDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
