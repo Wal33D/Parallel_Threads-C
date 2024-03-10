@@ -1,7 +1,10 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef PTHREAD_H
+#define PTHREAD_H
 
-#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
 
 extern volatile int running_threads; // Declaration of global variable
 
@@ -23,4 +26,4 @@ int getArrayInput(int n, int *array_ptr);
 void joinThreads(int numberOfThreads);
 void createThreads(int *array_ptr);
 
-#endif // UTILS_H
+#endif // PTHREAD_H

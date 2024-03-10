@@ -1,18 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <errno.h>
+#include <pthreads.h>
 
-//Error handling for pthread_create and pthread_join
-//from the pthread_create man page
+/*Error handling for pthread_create and pthread_join*/
+/*from the pthread_create man page*/
 #define handle_error_en(en, msg) \
-	do                           \
-	{                            \
-		errno = en;              \
-		perror(msg);             \
-		exit(EXIT_FAILURE);      \
-	} while (0)
+        do { errno = en; perror(msg); exit(EXIT_FAILURE); } while (0)
 
 // # of running threads 
 volatile int running_threads = 0;
@@ -64,7 +55,7 @@ void createThreads(int *array_ptr)
 
 	int s; //error #
 	//Create a thread and passing in the function to begin
-	exectuing as well as that functions required arguments
+	//exectuing as well as that functions required arguments
 
 	s = pthread_create(&thread[0], NULL, findMin, (void *)array_ptr);
 
@@ -76,7 +67,7 @@ void createThreads(int *array_ptr)
 	running_threads += 1;
 
 	//Create a thread and passing in the function to begin
-	exectuing as well as that functions required arguments
+	//exectuing as well as that functions required arguments
 	s = pthread_create(&thread[1], NULL, findMax, (void *)array_ptr);
 
 	if (s != 0)
@@ -87,7 +78,7 @@ void createThreads(int *array_ptr)
 	running_threads += 1;
 
 	//Create a thread and passing in the function to begin
-	exectuing as well as that functions required arguments
+	//exectuing as well as that functions required arguments
 	s = pthread_create(&thread[2], NULL, findAverage, (void *)array_ptr);
 
 	if (s != 0)

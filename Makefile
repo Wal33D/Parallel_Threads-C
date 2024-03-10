@@ -1,12 +1,12 @@
 CC = gcc
 CFLAGS = -Wall -g -Iinclude
-TARGET = PThreads
+TARGET = pthreads
 SRCDIR = src
 INCDIR = include
 BUILDDIR = build
 
 # Update the SRC variable if necessary
-SRC = $(SRCDIR)/PThreads.c $(SRCDIR)/utils.c
+SRC = $(SRCDIR)/pthreads.c $(SRCDIR)/utils.c
 
 # Update OBJ to place object files in the build directory
 OBJ = $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o,$(SRC))
