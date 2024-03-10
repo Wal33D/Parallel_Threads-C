@@ -16,28 +16,21 @@ struct Results Results; // Definition of the Results variable
 
 
 //This function joins our n number of threads 
-void joinThreads(int numberOfThreads)
-{
+void joinThreads(int numberOfThreads) {
+    // int i; // Commented out or removed since it's unused
+    int s; //error #
 
-	int i; //count
+    while (numberOfThreads >= 0) { //Join our threads
+        s = pthread_join(thread[numberOfThreads], NULL);
 
-	int s; //error #
-
-	while (numberOfThreads >= 0)
-	{ //Join our threads
-
-		s = pthread_join(thread[numberOfThreads], NULL);
-
-		//if we recieve anything other than 0 we have a join error
-		if (s != 0)
-		{
-			//handle error
-			handle_error_en(s, "pthread_create");
-		}
-
-		numberOfThreads--;
-	}
+        if (s != 0) {
+            //handle error
+            handle_error_en(s, "pthread_create");
+        }
+        numberOfThreads--;
+    }
 }
+
 
 //This function creates the 3 threads we need and supplys
 //error catching for pthread_create, it could be
