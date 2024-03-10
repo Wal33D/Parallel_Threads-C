@@ -8,20 +8,6 @@
 // # of running threads 
 volatile int running_threads = 0;
 
-pthread_t thread[3]; //Descriptors for our 3 threads
-
-int numOfElements; //Total # of elements from the user
-
-struct Results
-{ //Struct to hold the statistical results
-
-	int min;
-	int max;
-	int average;
-
-} Results;
-
-
 //This function joins our n number of threads 
 void joinThreads(int numberOfThreads)
 {
