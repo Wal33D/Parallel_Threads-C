@@ -1,7 +1,7 @@
 #include <pthread.h>
 #include "utils.h"
 
-/* Global variables and struct definitions are declared in utils.h */
+struct Results Results; // Definition of the Results variable
 
 /*This function finds the minimum element of an array*/
 void *findMin(void *array_ptr)

@@ -12,12 +12,7 @@ pthread_t thread[3]; //Descriptors for our 3 threads
 
 int numOfElements; //Total # of elements from the user
 
-struct Results
-{
-    int min;
-    int max;
-    int average;
-} Results;
+struct Results Results; // Definition of the Results variable
 
 
 //This function joins our n number of threads 
