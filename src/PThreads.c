@@ -1,109 +1,95 @@
 #include <pthread.h>
 #include "utils.h"
-/*Error handling for pthread_create and pthread_join*/
-/*from the pthread_create man page*/
+
+// Macro for error handling in thread creation and joining, adapted from the pthread_create man page
 #define handle_error_en(en, msg) \
         do { errno = en; perror(msg); exit(EXIT_FAILURE); } while (0)
 
-// # of running threads 
+// Global variable to track the number of running threads
 volatile int running_threads = 0;
 
-pthread_t thread[3]; //Descriptors for our 3 threads
+// Array to hold thread identifiers for our three worker threads
+pthread_t thread[3];
 
-int numOfElements; //Total # of elements from the user
+// Global variable to store the total number of elements input by the user
+int numOfElements;
 
-struct Results Results; // Definition of the Results variable
+// Global instance of the Results structure to hold computation outcomes
+struct Results Results;
 
-
-//This function joins our n number of threads 
+/**
+ * Waits for and joins the specified number of worker threads.
+ * @param numberOfThreads The number of threads to join.
+ */
 void joinThreads(int numberOfThreads) {
-    // int i; // Commented out or removed since it's unused
-    int s; //error #
+    int s; // Variable to capture pthread_join return status
 
-    while (numberOfThreads >= 0) { //Join our threads
+    while (numberOfThreads >= 0) { // Loop to join threads
         s = pthread_join(thread[numberOfThreads], NULL);
 
         if (s != 0) {
-            //handle error
-            handle_error_en(s, "pthread_create");
+            handle_error_en(s, "pthread_join");
         }
         numberOfThreads--;
     }
 }
 
-
-//This function creates the 3 threads we need and supplys
-//error catching for pthread_create, it could be
-//modified easily to create any # of threads automatically
-
+/**
+ * Creates three threads to compute the minimum, maximum, and average values.
+ * @param array_ptr Pointer to the array of integers.
+ */
 void createThreads(int *array_ptr)
 {
+	int s; // Variable to capture pthread_create return status
 
-	int s; //error #
-	//Create a thread and passing in the function to begin
-	//exectuing as well as that functions required arguments
-
+	// Creating a thread for finding the minimum value
 	s = pthread_create(&thread[0], NULL, findMin, (void *)array_ptr);
-
-	if (s != 0)
-	{
-
+	if (s != 0) {
 		handle_error_en(s, "pthread_create");
 	}
 	running_threads += 1;
 
-	//Create a thread and passing in the function to begin
-	//exectuing as well as that functions required arguments
+	// Creating a thread for finding the maximum value
 	s = pthread_create(&thread[1], NULL, findMax, (void *)array_ptr);
-
-	if (s != 0)
-	{
-
+	if (s != 0) {
 		handle_error_en(s, "pthread_create");
 	}
 	running_threads += 1;
 
-	//Create a thread and passing in the function to begin
-	//exectuing as well as that functions required arguments
+	// Creating a thread for calculating the average
 	s = pthread_create(&thread[2], NULL, findAverage, (void *)array_ptr);
-
-	if (s != 0)
-	{
-
+	if (s != 0) {
 		handle_error_en(s, "pthread_create");
 	}
-
 	running_threads += 1;
 }
 
-// The main function initialiazes the dynamic array as well
-// as allocating space for it, Then it creates, using pthread_create, 
-//3 Threads 1 to calculate the min, the max, and the average.
-//We then wait until each thread completes its task and then
-//join the 3 threads and prompt the user with the results
- 
+/**
+ * Main function to initialize data, create threads, and report results.
+ */
 int main()
 {
+	int n = 1; // Initial size of the dynamic array
 
-	int n = 1; // Initial Array Size
+	// Allocating memory for the dynamic array
+	int *array_ptr = malloc(n * sizeof(int)); 
 
-	int *array_ptr = malloc(n * sizeof(int)); //Initialize array pointer
-
-	//get an n sized array of elements from the user and save count
+	// Retrieving the number of elements from the user and storing them in the dynamic array
 	numOfElements = getArrayInput(n, array_ptr);
 
+	// Creating threads to compute statistical values
 	createThreads(array_ptr);
 
-	while (running_threads > 0)
-	{ //Wait for each thread to decrement
-
+	// Waiting for all threads to complete their tasks
+	while (running_threads > 0) {
 		sleep(1);
 	}
 
-	joinThreads(2); //Call our thread joining function passing # of threads 
+	// Joining all threads
+	joinThreads(2);
 
-	//Prompt the user with our results
+	// Reporting the computed results to the user
 	printf("\nThe average is %d\nThe maximum is %d\nThe minimum is %d\n", Results.average, Results.max, Results.min);
 
-	return (0);
+	return 0;
 }

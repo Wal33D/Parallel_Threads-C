@@ -1,6 +1,7 @@
 #include <pthread.h>
 #include "utils.h"
 
+
 /*This function finds the minimum element of an array*/
 void *findMin(void *array_ptr)
 {
