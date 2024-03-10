@@ -12,6 +12,7 @@
         "retool.config.json": true
     },
     "files.associations": {
-        "pthread.h": "c"
+        "pthread.h": "c",
+        "utils.h": "c"
     }
 }

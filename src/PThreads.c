@@ -1,5 +1,5 @@
 #include <pthread.h>
-#include <utils.h>
+#include "utils.h"
 /*Error handling for pthread_create and pthread_join*/
 /*from the pthread_create man page*/
 #define handle_error_en(en, msg) \
@@ -11,6 +11,13 @@ volatile int running_threads = 0;
 pthread_t thread[3]; //Descriptors for our 3 threads
 
 int numOfElements; //Total # of elements from the user
+
+struct Results
+{
+    int min;
+    int max;
+    int average;
+} Results;
 
 
 //This function joins our n number of threads 
