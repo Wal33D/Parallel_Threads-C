@@ -9,8 +9,6 @@
 extern volatile int running_threads; // Declaration of global variable
 
 extern int numOfElements; // Declaration of global variable
-pthread_t thread[3]; //Descriptors for our 3 threads
-int numOfElements; //Total # of elements from the user
 
 struct Results
 { //Struct to hold the statistical results
@@ -20,6 +18,7 @@ struct Results
 	int average;
 
 } Results;
+
 
 extern struct Results Results; // Declaration of global struct
 
