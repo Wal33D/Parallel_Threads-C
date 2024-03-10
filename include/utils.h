@@ -10,6 +10,16 @@ extern volatile int running_threads; // Declaration of global variable
 
 extern int numOfElements; // Declaration of global variable
 
+struct Results
+{ //Struct to hold the statistical results
+
+	int min;
+	int max;
+	int average;
+
+} Results;
+
+
 extern struct Results Results; // Declaration of global struct
 
 // Function declarations
