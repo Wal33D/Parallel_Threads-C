@@ -1,4 +1,5 @@
-#include <pthreads.h>
+#include <pthread.h>
+#include <utils.h>
 
 /* Global variables and struct definitions are declared in utils.h */
 

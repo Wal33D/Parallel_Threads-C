@@ -1,4 +1,5 @@
-#include <pthreads.h>
+#include <pthread.h>
+#include <utils.h>
 
 /*Error handling for pthread_create and pthread_join*/
 /*from the pthread_create man page*/
